@@ -1,0 +1,258 @@
+const string=`/*
+* 一起用CSS画个熊本熊吧，先做一些准备工作，如需节省时间请按右侧加速键
+*/
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  outline:none;
+}
+*::before,
+*::after{
+  box-sizing:border-box;
+}
+#html{
+  background:#f1c1c5; 
+}
+#kumamon{
+  position:relative;
+}
+/*
+ * 正式开始，首先，需要画一个不那么强壮的黑熊身体
+ */
+.body{
+  position:absolute;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  left:50%;
+  transform:translateX(-50%);
+  margin-top:80px;
+  width:320px;
+  height:240px;
+  border-radius:60% 60% 0 0;
+  background:black;
+}
+/*
+ * 接下来，安上两个耳朵
+ */
+.ear{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  position:absolute;
+  height:80px;
+  width:80px;
+  left:50%;
+  margin-left:-40px;
+  border-radius:50%;
+  background:black;
+  top:-10px;
+}
+.ear .inner{
+  height:50px;
+  width:50px;
+  border-radius:50%;
+  background:white;
+}
+.ear.left{
+  transform:translateX(-140px);
+}
+.ear.right {
+  transform:translateX(140px);
+}
+/*
+ * 老爷爷同款眉毛，安排
+ */
+.eyebrow{
+  position:absolute;
+  top:20px;
+  width:36px;
+  height:36px;
+  left:50%;
+  margin-left:-18px;
+  background:white;
+  border-radius:50%;
+}
+.base,.minus{
+  position:absolute;
+  border-radius:50%;
+}
+.base{
+  top:0;
+  width:36px;
+  height:36px;
+  background:white;
+}
+.minus{
+  top:6px;
+  width:40px;
+  height:40px;
+  background:black;
+  left:50%;
+  margin-left:-20px;
+}
+.eyebrow.left{
+  transform:translateX(-60px);
+}
+.eyebrow.right{
+  transform:translateX(60px);
+}
+/*
+ * 乌溜溜的黑眼珠 和你的笑脸
+ */
+.eye{
+  position:absolute;
+  width:64px;
+  height:64px;
+  left:50%;
+  margin-left:-32px;
+  border-radius:50%;
+  background:white;
+  top:50px;
+}
+.pulp{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  width:10px;
+  height:40px;
+  background-color:black;
+  border-radius:5px/12px;
+  animation:blink 1s infinite;
+}
+.eye.left{
+  transform:translateX(-64px);
+}
+.eye.right{
+  transform:translateX(64px);
+}
+/*
+ * 怎么也难忘记你 容颜的转变，鼻子和嘴一起转变啦
+ */
+.nosemouth{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  top:120px;
+  width:160px;
+  height:120px;
+  border-radius:80px/60px;
+  background-color:white;
+}	
+.nose{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  top:5px;
+  width:50px;
+  height:36px;
+  border-radius:50px/24px 24px 48px 48px;
+  background-color:black;
+}
+.mouth{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  top:50px;
+  width:120px;
+  height:30px;
+  border-radius:70px/10px 10px 30px 30px;
+  background-color:black;
+}
+/*
+* 最后上个腮红，这只丑丑的熊本熊送给你
+*/		
+.cheek{
+  position:absolute;
+  top:50%;
+  width:100px;
+  height:100px;
+  left:50%;
+  margin-left:-50px;;
+  border-radius:50%;
+  background: #ef2b2d;
+}
+.cheek.left{
+  transform:translateX(-138px);
+}
+.cheek.right{
+  transform:translateX(138px);
+}
+@keyframes blink {
+  35%{
+    height:24px;
+  }
+  50%{
+    height:.5px;		
+  }
+  65%{
+    height:24px;
+  }
+}
+`
+
+const player={
+    n:1,
+    id:undefined,
+    time:100,
+    ui:{
+        demo:document.querySelector('#demo'),
+        demo2:document.querySelector('#demo2')
+    },
+    events:{
+        '#btnPause':'pause',
+        '#btnPlay':'play',
+        '#btnSlow':'slow',
+        '#btnNormal':'normal',
+        '#btnFast':'fast'
+    },
+    init:()=>{
+        player.ui.demo.innerText=string.substring(0,player.n)
+        player.ui.demo2.innerHTML=string.substring(0,player.n)
+        player.bindEvents()
+        player.play()
+    },
+
+    bindEvents:()=>{
+        for (let key in player.events){
+            if(player.events.hasOwnProperty(key)) {
+                const value = player.events[key]
+                document.querySelector(key).onclick = player[value]
+            }
+        }
+    },
+    run:()=>{
+        player.n+=1
+        if(player.n>string.length){
+            window.clearInterval(player.id)
+            return
+        }
+        player.ui.demo.innerText=string.substring(0,player.n)
+        player.ui.demo2.innerHTML=string.substring(0,player.n)
+        player.ui.demo.scrollTop=player.ui.demo.scrollHeight
+    },
+    play:()=>{
+        player.id=setInterval(player.run,player.time)
+    },
+    pause:()=>{
+        window.clearInterval(player.id)
+    },
+    slow:()=>{
+        player.pause()
+        player.time=300
+        player.play()
+    },
+    normal:()=>{
+        player.pause()
+        player.time=100
+        player.play()
+    },
+    fast:()=>{
+        player.pause()
+        player.time=0
+        player.play()
+    }
+}
+player.init()
